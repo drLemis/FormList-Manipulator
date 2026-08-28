@@ -1,4 +1,9 @@
 {
+    "default-registry": {
+        "kind": "git",
+        "repository": "https://github.com/microsoft/vcpkg",
+        "baseline": "114d9fe62faf35856b45cf55cb93b57028a45d63"
+    },
     "registries": [
         {
             "kind": "git",
@@ -6,8 +11,6 @@
             "baseline": "6309841a1ce770409708a67a9ba5c26c537d2937",
             "packages": [
                 "bethesda-skyrim-scripts",
-                "commonlibsse-ng",
-                "commonlibsse-ng-prebuilt",
                 "gluino",
                 "script-extender-common",
                 "skse"

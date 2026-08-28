@@ -6,7 +6,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 ########################################################################################################################
 project(
     FormListManipulator
-    VERSION 1.7.0.0
+    VERSION 1.7.0.1
     DESCRIPTION "Allows dynamic modification of FormLists."
     LANGUAGES CXX
 )
@@ -57,21 +57,29 @@ source_group(
 ########################################################################################################################
 ## Configure target DLL.
 ########################################################################################################################
-find_package(CommonLibSSE CONFIG REQUIRED)
+
+# Build CommonLibSSE-NG from source (alandtse/CommonLibVR ng branch v6.7.0)
+# for Skyrim 1.7.99 / Address Library format 5 support.
+# The vcpkg-colorglass registry only has v3.7.0 which predates 1.7.99.
+set(ENABLE_SKYRIM_VR OFF)
+set(BUILD_TESTS OFF)
+set(SKSE_SUPPORT_XBYAK ON)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/external/CommonLibNG" CommonLibNG EXCLUDE_FROM_ALL)
+include("${CMAKE_CURRENT_SOURCE_DIR}/external/CommonLibNG/cmake/CommonLibSSE.cmake")
+
 find_package(unordered_dense CONFIG REQUIRED)
-find_package(tsl-ordered-map CONFIG REQUIRED)
 find_path(MERGEMAPPER_INCLUDE_DIRS "MergeMapperPluginAPI.h")
 find_path(CLIB_UTIL_INCLUDE_DIRS "ClibUtil/utils.hpp")
 
 add_commonlibsse_plugin(
-	${PROJECT_NAME} 
-	${PROJECT_AUTHOR}
-	${PROJECT_AUTHOR_EMAIL}
-	${PROJECT_VERSION}
-	SOURCES ${sources} 
+	${PROJECT_NAME}
+	NAME ${PROJECT_FRIENDLY_NAME}
+	AUTHOR ${PROJECT_AUTHOR}
+	EMAIL ${PROJECT_AUTHOR_EMAIL}
+	VERSION ${PROJECT_VERSION}
+	SOURCES ${sources}
 	${MERGEMAPPER_INCLUDE_DIRS}/MergeMapperPluginAPI.cpp
 	)
-add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS "${PROJECT_NAME}")
 
 target_include_directories(${PROJECT_NAME}
         PRIVATE
@@ -85,7 +93,6 @@ target_link_libraries(
 	${PROJECT_NAME}
 	PRIVATE
 		unordered_dense::unordered_dense
-		tsl::ordered_map
 )
 
 target_precompile_headers(${PROJECT_NAME}

@@ -1,15 +1,11 @@
 #pragma once
 
-#undef MessageBox
-#undef GetModuleHandle
 #include "Types/Types.hpp"
-
-namespace winApi = SKSE::WinAPI;
 
 namespace flm
 {
-	inline winApi::HMODULE tweaks{ nullptr };   /* PowerOfThree Tweaks handle. */
-	inline winApi::HMODULE kid{ nullptr };      /* PowerOfThree KID handle. */
+	inline HMODULE tweaks{ nullptr };   /* PowerOfThree Tweaks handle. */
+	inline HMODULE kid{ nullptr };      /* PowerOfThree KID handle. */
 
 	/**
 	 * \brief Returns the EditorID for a given FromID.
@@ -41,9 +37,9 @@ namespace flm
 	 *
 	 * \return                  - True if module exists.
 	 */
-	inline bool CheckDll(winApi::HMODULE& dll, const wchar_t* dllName)
+	inline bool CheckDll(HMODULE& dll, const wchar_t* dllName)
 	{
-		dll = winApi::GetModuleHandle(dllName);
+		dll = GetModuleHandleW(dllName);
 		return dll != nullptr;
 	}
 
@@ -54,10 +50,10 @@ namespace flm
 	 * \param header            - Header in the displayed message if the dll is not installed.
 	 * \param info              - The contents of the displayed message if the dll is not installed.
 	 */
-	inline void GuardDll(winApi::HMODULE& dll, const wchar_t* dllName, const std::string_view header, const std::string_view info)
+	inline void GuardDll(HMODULE& dll, const wchar_t* dllName, const std::string_view header, const std::string_view info)
 	{
 		if(!CheckDll(dll, dllName))
-			if(const auto id = winApi::MessageBox(nullptr, info.data(), header.data(), 0x00000001); id == 2)
+			if(const auto id = MessageBoxA(nullptr, info.data(), header.data(), 0x00000001); id == 2)
 				std::_Exit(EXIT_FAILURE);
 	}
 
